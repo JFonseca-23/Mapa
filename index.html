@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<title>Mapa Interativo - Canções Espanholas</title>
+<link href="https://unpkg.com/leaflet/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.27/build/Midi.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.min.js"></script>
+<script src="https://www.verovio.org/javascript/latest/verovio-toolkit.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+      #map { height: 100vh; }
+      .popup-content {
+        font-family: sans-serif;
+        padding: 10px;
+      }
+      .difficulty-indicator {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 0.9em;
+        font-weight: bold;
+      }
+      .difficulty-Easy {
+        background-color: #90EE90;
+        color: #006400;
+      }
+      .difficulty-Medium {
+        background-color: #FFD700;
+        color: #8B6914;
+      }
+      .difficulty-Hard {
+        background-color: #FFB6C1;
+        color: #8B0000;
+      }
+      .note-highlight {
+        fill: #ff6600 !important;
+        stroke: #ff6600 !important;
+      }
+      #meiModal {
+        display: none;
+        position: fixed;
+        top: 5%;
+        left: 5%;
+        width: 90%;
+        height: 90%;
+        background: white;
+        border: 2px solid #333;
+        overflow: auto;
+        z-index: 1000;
+        padding: 1em;
+      }
+      #closeBtn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      #meiContainer {
+        text-align: center;
+      }
+      #filters {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 1em;
+        background: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid #ccc;
+        z-index: 1000;
+      }
+      #filters strong {
+        margin-right: 1em;
+      }
+      #filters span {
+        margin-left: 1em;
+      }
+      #introPage {
+        position: fixed;
+        z-index: 2000;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #enterMapBtn {
+        margin-top: 2em;
+        padding: 1em 2em;
+        font-size: 1.2em;
+        cursor: pointer;
+        background: #0078d7;
+        color: white;
+        border: none;
+        border-radius: 6px;
+      }
+  </style>
+</head>
+<body>
+<div id="introPage">
+<div style="max-width:600px;text-align:center;">
+<h1>Bem-vindo ao Mapa Interativo de Canções Ibéricas</h1>
+<p>
+        Este projeto apresenta um mapa interativo com canções tradicionais de Portugal e Espanha, permitindo visualizar partituras MEI, ouvir a reprodução MIDI e explorar diferentes temas e dificuldades.<br/><br/>
+        Use os filtros para explorar as canções por localização, dificuldade ou temática. Clique nos marcadores do mapa para abrir a partitura e ouvir a música.
+      </p>
+<button id="enterMapBtn">Entrar no Mapa</button>
+</div>
+</div>
+<div id="filters" style="display:none;">
+<strong>Filter:</strong>
+<span>Location:
+      <select id="filter-country" onchange="updateRegionFilter()">
+        <option value="">All Countries</option>
+        <option value="PT">Portugal</option>
+        <option value="ES">Spain</option>
+      </select>
+      <select id="filter-region" style="margin-left: 5px;">
+        <option value="">All Regions</option>
+      </select>
+</span>
+<span>Difficulty:
+      <select id="filter-difficulty">
+        <option value="">All</option>
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+</span>
+<span>Thematic:
+      <select id="filter-thematic">
+        <option value="">All</option>
+        <option value="Affect & desires">Affect & desires</option>
+        <option value="Family">Family</option>
+        <option value="Symbolic Traditional">Symbolic Traditional</option>
+        <option value="Natural Imagery">Natural Imagery</option>
+        <option value="Honorific - Religious">Honorific - Religious</option>
+        <option value="Ritual">Ritual</option>
+      </select>
+</span>
+</div>
+<div id="map"></div>
+<div id="meiModal" style="display:none">
+<button id="closeBtn">Fechar</button>
+<div id="meiContainer"></div>
+<div>
+<button onclick="player.play()">▶️ Play</button>
+<button onclick="player.pause()">⏸️ Pause</button>
+<button onclick="player.stop()">⏹️ Stop</button>
+<span style="margin-left:2em; font-weight:bold;">BPM:</span>
+<button id="bpmDownBtn" style="margin-left:0.5em;">-</button>
+<input id="bpmInput" max="300" min="30" style="width:60px; text-align:center;" type="number" value="120"/>
+<button id="bpmUpBtn">+</button>
+<button id="metronomeToggleBtn" style="margin-left:2em; background:#eee; border:1px solid #aaa; border-radius:4px;">Metronome: OFF</button>
+</div>
+</div>
+<script>
+    const DEBUG = true;
+    function log(...args) {
+      if (DEBUG) console.log(...args);
+    }
+
+    // Global variables
+    let map = null;
+    let songs = [];
+    let markerGroup = null;
+    let mapInitialized = false;
+
+    // Create custom marker icon
+    const customIcon = L.icon({
+      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    // Region coordinates for Spanish and Portuguese regions
+    const regionBounds = {
+      // Portuguese regions
+      "Braga": {
+        center: [41.5454, -8.4265],
+        bounds: [[41.4, -8.5], [41.6, -8.3]]
+      },
+      "Faro": {
+        center: [37.0161, -7.9350],
+        bounds: [[36.9, -8.0], [37.1, -7.8]]
+      },
+      "Viana do Castelo": {
+        center: [41.6946, -8.8344],
+        bounds: [[41.6, -8.9], [41.8, -8.7]]
+      },
+      "Viseu": {
+        center: [40.6566, -7.9125],
+        bounds: [[40.5, -8.0], [40.7, -7.8]]
+      },
+      "Porto": {
+        center: [41.1496, -8.6109],
+        bounds: [[41.0, -8.7], [41.2, -8.5]]
+      },
+      // Spanish regions
+      "Andalucía": {
+        center: [37.5443, -4.7278],
+        bounds: [[36.0, -7.5], [38.7, -1.6]]
+      },
+      "Aragón": {
+        center: [41.7219, -1.0763],
+        bounds: [[39.8, -2.2], [42.9, 0.8]]
+      },
+      "Asturias": {
+        center: [43.3619, -5.8494],
+        bounds: [[42.8, -7.0], [43.7, -4.5]]
+      },
+      "Castilla y León": {
+        center: [41.6529, -4.7286],
+        bounds: [[40.0, -7.0], [43.2, -2.5]]
+      },
+      "Castilla-La Mancha": {
+        center: [39.2796, -3.0977],
+        bounds: [[38.0, -5.0], [41.0, -1.0]]
+      },
+      "Cataluña": {
+        center: [41.8205, 1.8677],
+        bounds: [[40.5, 0.2], [42.9, 3.3]]
+      },
+      "Extremadura": {
+        center: [39.4937, -6.0679],
+        bounds: [[37.9, -7.5], [40.5, -4.7]]
+      },
+      "Galicia": {
+        center: [42.5751, -8.1339],
+        bounds: [[41.8, -9.3], [43.8, -6.7]]
+      },
+      "Cantabria": {
+        center: [43.1828, -3.9878],
+        bounds: [[42.8, -4.5], [43.5, -3.2]]
+      },
+      "Comunidad de Madrid": {
+        center: [40.4168, -3.7038],
+        bounds: [[39.8, -4.5], [41.2, -3.0]]
+      },
+      "País Vasco": {
+        center: [43.0574, -2.5014],
+        bounds: [[42.4, -3.5], [43.4, -1.7]]
+      },
+      "La Rioja": {
+        center: [42.2871, -2.5396],
+        bounds: [[41.9, -3.1], [42.6, -1.7]]
+      },
+      "Navarra": {
+        center: [42.6954, -1.6761],
+        bounds: [[41.9, -2.5], [43.2, -0.7]]
+      },
+      "Comunidad Valenciana": {
+        center: [39.4840, -0.7532],
+        bounds: [[37.8, -1.5], [40.8, 0.5]]
+      },
+      "Islas Baleares": {
+        center: [39.6104, 2.9527],
+        bounds: [[38.6, 1.2], [40.1, 4.3]]
+      },
+      "Murcia": {
+        center: [37.9922, -1.1307],
+        bounds: [[37.5, -1.8], [38.5, -0.7]]
+      }
+    };
+
+    // Song difficulty and thematic analysis
+    const songDifficultyData = {};
+    let thematicMap = {};
+
+    // Load thematic map before anything else
+    async function loadThematicMap() {
+      try {
+        const response = await fetch('thematic_map.json');
+        if (!response.ok) throw new Error('Failed to load thematic_map.json');
+        thematicMap = await response.json();
+        log('Loaded thematic map with', Object.keys(thematicMap).length, 'themes');
+      } catch (err) {
+        console.error('Error loading thematic map:', err);
+        thematicMap = {};
+      }
+    }
+
+    // Spanish region mapping for file prefixes
+    const spanishPrefixRegionMap = {
+      'ES-1913-B': 'Cataluña',
+      'ES-1943-SA': 'Castilla y León',
+      'ES-1948-CB': 'Castilla y León',
+      'ES-1950-AV': 'Castilla y León',
+      'ES-1952-BA': 'Extremadura',
+      'ES-1952-CC': 'Extremadura',
+      'ES-1952-HU': 'Andalucía',
+      'ES-1952-SE': 'Andalucía',
+      'ES-1952-TO': 'Castilla-La Mancha',
+      'ES-1953-GR': 'Andalucía',
+      'ES-1953-HU': 'Andalucía'
+    };
+
+    // Helper functions
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return hash;
+    }
+
+    function getDeterministicCoordInRegion(filename, regionName) {
+      const region = regionBounds[regionName];
+      if (!region) return null;
+
+      // Use center point as base to ensure we're on land
+      const center = region.center;
+      const bounds = region.bounds;
+      const hash = hashString(filename);
+      
+      // Calculate max offset from center (use smaller ranges to stay more central)
+      const latRange = (bounds[1][0] - bounds[0][0]) * 0.4; // 40% of full range
+      const lngRange = (bounds[1][1] - bounds[0][1]) * 0.4;
+      
+      // Use different parts of the hash for lat and lng
+      const latHash = hash & 0xFFFF;
+      const lngHash = (hash >> 16) & 0xFFFF;
+      
+      // Generate offset from center point
+      const latOffset = (Math.abs(latHash) % 10000) / 10000 * latRange - (latRange / 2);
+      const lngOffset = (Math.abs(lngHash) % 10000) / 10000 * lngRange - (lngRange / 2);
+      
+      const lat = center[0] + latOffset;
+      const lng = center[1] + lngOffset;
+      
+      return [lat, lng];
+    }
+
+    // Remove getRandomCoordInRegion as it's no longer needed
+    // ...existing code...
+    async function loadSongs() {
+      const songs = [];
+      
+      // Load song difficulty analysis data
+      try {
+        log('Loading song difficulty analysis data...');
+        const difficultyResponse = await fetch('song_difficulty_analysis.json');
+        if (!difficultyResponse.ok) {
+          throw new Error(`HTTP error! status: ${difficultyResponse.status}`);
+        }
+        const difficultyData = await difficultyResponse.json();
+        Object.assign(songDifficultyData, difficultyData);
+        log('Loaded difficulty data for', Object.keys(songDifficultyData).length, 'songs');
+      } catch (err) {
+        console.error('Error loading difficulty data:', err);
+        Object.keys(songDifficultyData).forEach(key => delete songDifficultyData[key]);
+      }
+      
+      try {
+        log('Loading Spanish songs mapping...');
+        // Load Spanish songs mapping
+        const spanishResponse = await fetch('spanish-mei-location-mapping.json');
+        if (!spanishResponse.ok) {
+          throw new Error(`HTTP error! status: ${spanishResponse.status}`);
+        }
+        const spanishMapping = await spanishResponse.json();
+        log('Loaded Spanish mapping with', Object.keys(spanishMapping).length, 'songs');
+        
+        log('Loading Portuguese songs mapping...');
+        // Load Portuguese songs mapping
+        const portugueseResponse = await fetch('portuguese-mei-location-mapping.json');
+        if (!portugueseResponse.ok) {
+          throw new Error(`HTTP error! status: ${portugueseResponse.status}`);
+        }
+        const portugueseMapping = await portugueseResponse.json();
+        log('Loaded Portuguese mapping with', Object.keys(portugueseMapping).length, 'songs');
+        
+        // Process Spanish songs
+        log('Processing Spanish songs...');
+        for (const [filename, locationData] of Object.entries(spanishMapping)) {
+          let region = locationData.region;
+          // If region is missing, try to determine it from the filename prefix
+          if (!region) {
+            // Try 4-part prefix first (e.g., ES-1948-CB-CO)
+            let prefix = filename.split('.mei')[0].split('-').slice(0, 4).join('-');
+            region = spanishPrefixRegionMap[prefix];
+            // If not found, try 3-part prefix (e.g., ES-1948-CB)
+            if (!region) {
+              prefix = filename.split('.mei')[0].split('-').slice(0, 3).join('-');
+              region = spanishPrefixRegionMap[prefix];
+            }
+          }
+          if (region && regionBounds[region]) {
+            const [lat, lng] = getDeterministicCoordInRegion(filename, region);
+            songs.push({
+              id: 'ES_' + filename.replace('.mei', '').replace(/^ES-/, '').replace(/-/g, '_'),
+              title: filename.replace('.mei', ''),
+              coordinates: [lat, lng],
+              mei: `Spanish/${filename}`,
+              country: 'ES',
+              region: region,
+              meiFilename: filename
+            });
+          } else {
+            log('Skipping Spanish song with invalid region:', filename, region || '<empty string>');
+          }
+        }
+        
+        // Process Portuguese songs
+        log('Processing Portuguese songs...');
+        for (const [filename, locationData] of Object.entries(portugueseMapping)) {
+          const region = locationData.region;
+          if (region && regionBounds[region]) {
+            const [lat, lng] = getDeterministicCoordInRegion(filename, region);
+            songs.push({
+              id: 'PT_' + filename.replace('.mei', '').replace(/^PT-/, '').replace(/-/g, '_'),
+              title: filename.replace('.mei', ''),
+              coordinates: [lat, lng],
+              mei: `Portuguese/${filename}`,
+              country: 'PT',
+              region: region,
+              meiFilename: filename
+            });
+          } else {
+            log('Skipping Portuguese song with invalid region:', filename, region);
+          }
+        }
+        
+        log(`Successfully loaded ${songs.length} total songs`);
+        return songs;
+        
+      } catch (err) {
+        console.error('Error loading song mappings:', err);
+        throw err;  // Re-throw to handle in caller
+      }
+    }
+    function getSongDifficulty(filename) {
+      const data = songDifficultyData[filename];
+      return data ? data.difficulty : '';
+    }
+
+    function getSongThematic(id) {
+      for (const [theme, arr] of Object.entries(thematicMap)) {
+        if (arr.includes(id)) {
+          log('Found thematic for song', id, ':', theme);
+          return theme;
+        }
+      }
+      log('No thematic found for song:', id);
+      return '';
+    }
+
+    function updateRegionFilter() {
+      const countrySelect = document.getElementById('filter-country');
+      const regionSelect = document.getElementById('filter-region');
+      const selectedCountry = countrySelect.value;
+      
+      // Clear existing options
+      regionSelect.innerHTML = '<option value="">All Regions</option>';
+      
+      if (!selectedCountry) {
+        renderMarkers();
+        return;
+      }
+      
+      // Get regions for selected country
+      const regions = Object.keys(regionBounds).filter(region => {
+        if (selectedCountry === 'PT') {
+          return ['Braga', 'Faro', 'Viana do Castelo', 'Viseu', 'Porto'].includes(region);
+        } else if (selectedCountry === 'ES') {
+          return ['Andalucía', 'Aragón', 'Asturias', 'Castilla y León', 
+                  'Castilla-La Mancha', 'Cataluña', 'Extremadura', 'Galicia',
+                  'Cantabria', 'Comunidad de Madrid', 'País Vasco', 'La Rioja',
+                  'Navarra', 'Comunidad Valenciana', 'Islas Baleares', 'Murcia'].includes(region);
+        }
+        return false;
+      });
+      
+      // Sort regions alphabetically
+      regions.sort();
+      
+      // Add region options
+      regions.forEach(region => {
+        const option = document.createElement('option');
+        option.value = region;
+        option.textContent = region;
+        regionSelect.appendChild(option);
+      });
+      
+      renderMarkers();
+    }
+
+    // --- Filtering logic ---
+    function filterSongs() {
+      const country = document.getElementById('filter-country').value;
+      const region = document.getElementById('filter-region').value;
+      const difficulty = document.getElementById('filter-difficulty').value;
+      const thematic = document.getElementById('filter-thematic').value;
+      
+      log('Filtering with:', { country, region, difficulty, thematic });
+      log('Total songs to filter:', songs.length);
+      log('Thematic map loaded:', Object.keys(thematicMap).length > 0);
+      
+      const filtered = songs.filter(song => {
+        // Country and region filtering
+        if (country && song.country !== country) return false;
+        if (region && song.region !== region) return false;
+        
+        // Difficulty filtering using song_difficulty_analysis.json data
+        if (difficulty) {
+          const songDifficulty = getSongDifficulty(song.meiFilename);
+          if (songDifficulty !== difficulty) return false;
+        }
+        
+        // Thematic filtering
+        if (thematic) {
+          const songThematic = getSongThematic(song.id);
+          log('Song', song.id, 'has thematic:', songThematic, 'looking for:', thematic);
+          if (songThematic !== thematic) return false;
+        }
+        
+        return true;
+      });
+      
+      log('Filtered result:', filtered.length, 'songs');
+      return filtered;
+    }
+
+    // Function to render markers on the map
+    function renderMarkers() {
+      if (markerGroup) {
+        markerGroup.clearLayers();
+      }
+
+      markerGroup = L.layerGroup();
+      
+      // Get filtered songs
+      const filteredSongs = filterSongs();
+      log('Filtered songs:', filteredSongs.length);
+
+      filteredSongs.forEach(song => {
+        if (!song.coordinates || !Array.isArray(song.coordinates) || song.coordinates.length !== 2) {
+          log('Invalid coordinates for song:', song);
+          return;
+        }
+
+        const marker = L.marker(song.coordinates, { icon: customIcon });
+        const difficulty = getSongDifficulty(song.meiFilename);
+        marker.bindPopup(`
+          <div class="popup-content">
+            <h3>${song.title}</h3>
+            <p>Region: ${song.region}</p>
+            <p>Difficulty: <span class="difficulty-indicator difficulty-${difficulty}">${difficulty || 'Not analyzed'}</span></p>
+          </div>
+        `);
+        marker.on('click', async () => {
+          document.getElementById('meiModal').style.display = 'block';
+          document.getElementById('meiContainer').innerHTML = '<em>Loading score...</em>';
+          try {
+            await loadVerovio(song.mei);
+          } catch (err) {
+            console.error('Error loading MEI file:', err);
+            document.getElementById('meiContainer').innerHTML = 
+              '<span style="color:red">Error loading score: ' + err.message + '</span>';
+          }
+        });
+        marker.addTo(markerGroup);
+      });
+
+      markerGroup.addTo(map);
+    }
+
+    // Add event listeners for filters
+    document.getElementById('filter-country').addEventListener('change', () => {
+      updateRegionFilter();
+      renderMarkers();
+    });
+    document.getElementById('filter-region').addEventListener('change', renderMarkers);
+    document.getElementById('filter-difficulty').addEventListener('change', renderMarkers);
+    document.getElementById('filter-thematic').addEventListener('change', renderMarkers);
+
+    // Initialize the map and load songs
+    async function initializeMap() {
+      if (mapInitialized) return;
+      
+      try {
+        // Create map with display set to block to ensure it's visible
+        document.getElementById('map').style.display = 'block';
+        
+        // Create map
+        map = L.map('map').setView([40.0, -4.5], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Load songs
+        songs = await loadSongs();
+        log(`Loaded ${songs.length} songs`);
+
+        if (songs.length > 0) {
+          await renderMarkers();
+        } else {
+          console.error('No songs loaded');
+        }
+
+        mapInitialized = true;
+        log('Map initialization complete');
+
+      } catch (error) {
+        console.error('Error during initialization:', error);
+        log('Error details:', error.message);
+        
+        // Show error on map
+        const errorDiv = document.createElement('div');
+        errorDiv.style.position = 'absolute';
+        errorDiv.style.top = '50%';
+        errorDiv.style.left = '50%';
+        errorDiv.style.transform = 'translate(-50%, -50%)';
+        errorDiv.style.backgroundColor = 'white';
+        errorDiv.style.padding = '20px';
+        errorDiv.style.borderRadius = '5px';
+        errorDiv.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+        errorDiv.style.zIndex = '1000';
+        errorDiv.innerHTML = `<p style="color: red; margin: 0;">Error loading songs. Please try refreshing the page.</p>`;
+        document.getElementById('map').appendChild(errorDiv);
+      }
+    }
+
+    // Add legend to the map
+    function addLegend(map) {
+      const legend = L.control({ position: 'bottomright' });
+      
+      legend.onAdd = function(map) {
+        const div = L.DomUtil.create('div', 'legend');
+        div.innerHTML = `
+          <style>
+            .legend {
+              background: white;
+              padding: 10px;
+              border-radius: 5px;
+              border: 1px solid #ccc;
+            }
+            .legend-item {
+              margin: 5px 0;
+              display: flex;
+              align-items: center;
+            }
+            .marker-icon {
+              width: 12px;
+              height: 20px;
+              margin-right: 5px;
+            }
+          </style>
+          <div class="legend-item">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png" class="marker-icon" alt="marker">
+            Song Locations
+          </div>
+        `;
+        return div;
+      };
+      
+      legend.addTo(map);
+    }
+
+    // Call addLegend after map initialization
+    // ...existing code...
+
+    // Initialize everything when the document is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // Event Listeners
+      document.getElementById('enterMapBtn').addEventListener('click', async () => {
+        try {
+          document.getElementById('introPage').style.display = 'none';
+          document.getElementById('map').style.display = '';
+          document.getElementById('filters').style.display = '';
+          
+          await loadThematicMap(); // Ensure thematicMap is loaded
+          if (!mapInitialized) {
+            await initializeMap();
+          }
+          
+          // Force Leaflet to recalculate map size
+          map?.invalidateSize();
+          
+          // Start audio context on user interaction (after UI is ready)
+          if (window.Tone) {
+            try {
+              await Tone.start();
+              console.log('Audio context started');
+            } catch (toneErr) {
+              console.warn('Could not start Tone.js audio context:', toneErr);
+            }
+          }
+        } catch (error) {
+          console.error('Error during map initialization:', error);
+          const errorDiv = document.createElement('div');
+          errorDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border-radius:5px;z-index:2001;box-shadow:0 0 10px rgba(0,0,0,0.5);';
+          errorDiv.innerHTML = `<p style="color:red;margin:0;">Error initializing map: ${error.message}</p>`;
+          document.body.appendChild(errorDiv);
+        }
+      });
+    });
+
+    // Close modal button
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      document.getElementById('meiModal').style.display = 'none';
+      if (window.player?.stop) window.player.stop();
+    });
+
+    // Player implementation
+    window.player = {
+      play: async () => {
+        try {
+          if (!midiData) {
+            console.error('No MIDI data available');
+            return;
+          }
+
+          // Initialize audio context with user gesture
+          if (!window.Tone) {
+            console.error('Tone.js not loaded');
+            return;
+          }
+
+          // Need to start audio context on first user interaction
+          try {
+            await Tone.start();
+            console.log('Audio context started');
+          } catch (err) {
+            console.error('Could not start audio context:', err);
+            return;
+          }
+          
+          // Ensure synth is created
+          if (!synth) {
+            synth = new Tone.PolySynth({
+              oscillator: { type: 'triangle' },
+              envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 0.1 }
+            }).toDestination();
+            console.log('Synth created');
+          }
+          
+          if (playing) return;
+
+          // Reset transport state
+          Tone.Transport.stop();
+          Tone.Transport.cancel();
+          Tone.Transport.position = 0;
+
+          playing = true;
+          midiObj = new Midi(midiData);
+          scheduledIds = [];
+
+          midiObj.tracks.forEach((track, trackIdx) => {
+            track.notes.forEach(note => {
+              let noteIds = null;
+              if (midiMapping?.tracks?.[trackIdx]) {
+                const mappingNote = midiMapping.tracks[trackIdx].notes.find(mn =>
+                  Math.abs(mn.time - note.time) < 0.01 && mn.midi === note.midi
+                );
+                if (mappingNote?.ids) noteIds = mappingNote.ids;
+              }
+              
+              const id1 = Tone.Transport.schedule(time => {
+                highlightNotes(noteIds, note);
+                synth.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+              }, note.time);
+              
+              const id2 = Tone.Transport.schedule(time => {
+                unhighlightNotes(noteIds, note);
+              }, note.time + note.duration);
+              
+              scheduledIds.push(id1, id2);
+            });
+          });
+
+          playStartTime = Tone.now();
+          if (metronomeOn) startMetronome();
+          Tone.Transport.start();
+        } catch (error) {
+          console.error('Error during playback:', error);
+        }
+      },
+      pause: () => {
+        if (!playing) return;
+        Tone.Transport.pause();
+        playing = false;
+        if (metronomeOn) stopMetronome();
+      },
+      stop: () => {
+        Tone.Transport.stop();
+        if (synth?.releaseAll) synth.releaseAll();
+        scheduledIds.forEach(id => Tone.Transport.clear(id));
+        scheduledIds = [];
+        document.querySelectorAll('#meiContainer .note-highlight')
+          .forEach(el => el.classList.remove('note-highlight'));
+        playing = false;
+        pauseTime = 0;
+        playStartTime = 0;
+        if (metronomeOn) stopMetronome();
+      }
+    };
+
+    let currentBpm = 120;
+    let playing = false;
+    let metronomeOn = false;
+    let metronomeSynth = null;
+    let metronomeEventId = null;
+    let midiData = null;
+    let midiObj = null;
+    let midiMapping = null;
+    let synth = null;
+    let scheduledIds = [];
+    let playStartTime = 0;
+    let pauseTime = 0;
+
+    // BPM Control
+    const bpmInput = document.getElementById('bpmInput');
+    const bpmDownBtn = document.getElementById('bpmDownBtn');
+    const bpmUpBtn = document.getElementById('bpmUpBtn');
+    const metronomeToggleBtn = document.getElementById('metronomeToggleBtn');
+
+    function setBpm(newBpm) {
+      currentBpm = Math.max(30, Math.min(300, Math.round(newBpm)));
+      bpmInput.value = currentBpm;
+      if (window.Tone?.Transport) {
+        Tone.Transport.bpm.value = currentBpm;
+      }
+    }
+
+    bpmInput.addEventListener('change', e => setBpm(Number(e.target.value)));
+    bpmDownBtn.addEventListener('click', () => setBpm(currentBpm - 5));
+    bpmUpBtn.addEventListener('click', () => setBpm(currentBpm + 5));
+
+    async function ensureMetronomeSynth() {
+      if (!metronomeSynth && window.Tone) {
+        await Tone.start();
+        metronomeSynth = new Tone.Synth({
+          oscillator: { type: 'triangle' },
+          envelope: { attack: 0.001, decay: 0.01, sustain: 0, release: 0.01 }
+        }).toDestination();
+      }
+    }
+
+    function updateMetronomeButton() {
+      metronomeToggleBtn.textContent = `Metronome: ${metronomeOn ? 'ON' : 'OFF'}`;
+      metronomeToggleBtn.style.background = metronomeOn ? '#b3e6b3' : '#eee';
+      metronomeToggleBtn.style.color = metronomeOn ? '#222' : '#444';
+    }
+
+    async function startMetronome() {
+      if (!metronomeOn || !window.Tone) {
+        console.log('Cannot start metronome:', { metronomeOn, hasTone: !!window.Tone });
+        return;
+      }
+      
+      try {
+        // Initialize metronome synth
+        await Tone.start();
+        await ensureMetronomeSynth();
+        console.log('Metronome synth ready');
+        
+        // Clear existing metronome schedule
+        if (metronomeEventId !== null) {
+          Tone.Transport.clear(metronomeEventId);
+          metronomeEventId = null;
+        }
+        
+        // Set current tempo
+        Tone.Transport.bpm.value = currentBpm;
+        
+        // Schedule metronome clicks
+        metronomeEventId = Tone.Transport.scheduleRepeat((time) => {
+          if (metronomeOn && metronomeSynth) {
+            const position = Tone.Transport.position;
+            const [bars, beats] = position.split(':').map(Number);
+            const isFirstBeat = beats === 0;
+            
+            const freq = isFirstBeat ? 1800 : 1200;
+            const vel = isFirstBeat ? 0.8 : 0.5;
+            
+            metronomeSynth.triggerAttackRelease(freq, 0.02, time, vel);
+          }
+        }, '4n');
+      } catch (error) {
+        console.error('Error starting metronome:', error);
+        stopMetronome();
+      }
+    }
+
+    function stopMetronome() {
+      if (metronomeEventId !== null && window.Tone) {
+        Tone.Transport.clear(metronomeEventId);
+        metronomeEventId = null;
+      }
+    }
+
+    metronomeToggleBtn.addEventListener('click', async () => {
+      try {
+        metronomeOn = !metronomeOn;
+        updateMetronomeButton();
+        
+        if (metronomeOn) {
+          await ensureMetronomeSynth();
+          if (playing) {
+            await startMetronome();
+          }
+        } else {
+          stopMetronome();
+        }
+      } catch (error) {
+        console.error('Error toggling metronome:', error);
+        metronomeOn = false;
+        updateMetronomeButton();
+      }
+    });
+
+    updateMetronomeButton();
+
+    // Score rendering and playback
+    async function loadVerovio(meiUrl) {
+      try {
+        const response = await fetch(meiUrl);
+        if (!response.ok) throw new Error('Failed to load MEI file');
+        const meiData = await response.text();
+
+        const toolkit = new verovio.toolkit();
+        toolkit.setOptions({
+          scale: 50,
+          adjustPageHeight: true,
+          pageHeight: 2000,
+          pageWidth: 1500
+        });
+
+        toolkit.loadData(meiData);
+        const svg = toolkit.renderToSVG(1);
+        if (!svg?.trim()) {
+          throw new Error('Failed to render score');
+        }
+
+        document.getElementById('meiContainer').innerHTML = svg;
+
+        // Get MIDI data
+        console.log('Getting MIDI data from Verovio...');
+        let midiBuffer = toolkit.renderToMIDI({ mapping: true });
+        console.log('MIDI buffer received:', midiBuffer);
+        
+        if (typeof midiBuffer === 'object' && midiBuffer.data && midiBuffer.mapping) {
+          console.log('Using Verovio 4+ MIDI format');
+          midiMapping = midiBuffer.mapping;
+          midiBuffer = midiBuffer.data;
+        } else {
+          console.log('Using legacy MIDI format');
+          midiMapping = null;
+        }
+
+        if (typeof midiBuffer === 'string') {
+          // Convert base64 to Uint8Array
+          const binary = atob(midiBuffer);
+          midiBuffer = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            midiBuffer[i] = binary.charCodeAt(i);
+          }
+        } else if (midiBuffer instanceof ArrayBuffer) {
+          midiBuffer = new Uint8Array(midiBuffer);
+        }
+
+        midiData = midiBuffer;
+
+        try {
+          console.log('Parsing MIDI data...');
+          const midi = new Midi(midiBuffer);
+          console.log('MIDI parsed successfully:', midi);
+          midiObj = midi;
+          window.midiObj = midi; // For debugging
+
+          // Set BPM from MIDI
+          let midiBpm = 120;
+          if (midi.header?.tempos?.[0]) {
+            midiBpm = Math.round(midi.header.tempos[0].bpm);
+            console.log('Found MIDI tempo:', midiBpm, 'BPM');
+          }
+          setBpm(midiBpm);
+
+          // Reset transport
+          Tone.Transport.stop();
+          Tone.Transport.cancel();
+          Tone.Transport.bpm.value = midiBpm;
+        } catch (error) {
+          console.error('Error parsing MIDI:', error);
+        }
+
+        playing = false;
+        pauseTime = 0;
+        playStartTime = 0;
+        scheduledIds = [];
+
+      } catch (err) {
+        console.error('Error loading/rendering score:', err);
+        document.getElementById('meiContainer').innerHTML = 
+          '<span style="color:red">Error loading or processing the score.</span>';
+      }
+    }
+
+    function highlightNotes(noteIds, note) {
+      if (!noteIds?.length) {
+        // Fallback to pitch-based highlighting
+        if (note?.name && note?.oct) {
+          const pname = note.name.replace(/\d+/, '').toLowerCase();
+          const oct = note.oct;
+          document.querySelectorAll(`#meiContainer [data-pname='${pname}'][data-oct='${oct}']`)
+            .forEach(el => el.classList.add('note-highlight'));
+        }
+        return;
+      }
+
+      noteIds.forEach(id => {
+        const el = document.querySelector(`#meiContainer [data-id='${id}']`);
+        if (el) {
+          el.classList.add('note-highlight');
+          el.querySelectorAll('*').forEach(child => child.classList.add('note-highlight'));
+        } else {
+          document.querySelectorAll(`#meiContainer [data-id*='${id}']`)
+            .forEach(d => d.classList.add('note-highlight'));
+        }
+      });
+    }
+
+    function unhighlightNotes(noteIds, note) {
+      if (!noteIds?.length) {
+        if (note?.name && note?.oct) {
+          const pname = note.name.replace(/\d+/, '').toLowerCase();
+          const oct = note.oct;
+          document.querySelectorAll(`#meiContainer [data-pname='${pname}'][data-oct='${oct}']`)
+            .forEach(el => el.classList.remove('note-highlight'));
+        }
+        return;
+      }
+
+      noteIds.forEach(id => {
+        const el = document.querySelector(`#meiContainer [data-id='${id}']`);
+        if (el) {
+          el.classList.remove('note-highlight');
+          el.querySelectorAll('*').forEach(child => child.classList.remove('note-highlight'));
+        } else {
+          document.querySelectorAll(`#meiContainer [data-id*='${id}']`)
+            .forEach(d => d.classList.remove('note-highlight'));
+        }
+      });
+    }
+
+    async function playMIDI(meiPath, songId) {
+      try {
+        if (activeSong === songId) {
+          return; // Already playing this song
+        }
+        
+        stopCurrentPlayback();
+        
+        const response = await fetch(meiPath);
+        if (!response.ok) {
+          throw new Error(`Failed to load MEI file: ${meiPath}`);
+        }
+        
+        const meiData = await response.text();
+        const midi = await convertMEItoMIDI(meiData);
+        
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          await Tone.start();
+        }
+        
+        // Create new synth for this playback
+        const synth = new Tone.PolySynth().toDestination();
+        activeSynth = synth;
+        activeSong = songId;
+        
+        // Schedule all notes
+        midi.tracks[0].notes.forEach(note => {
+          synth.triggerAttackRelease(
+            note.name,
+            note.duration,
+            Tone.now() + note.time,
+            note.velocity
+          );
+        });
+        
+        // Start metronome if enabled
+        if (metronomeEnabled[songId]) {
+          startMetronome(midi.header.tempos[0].bpm);
+        }
+        
+      } catch (error) {
+        console.error('Error playing MIDI:', error);
+        alert('Error playing song. Please try again.');
+      }
+    }
+
+  </script>
+</body>
+</html>

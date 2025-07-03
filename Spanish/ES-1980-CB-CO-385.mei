@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?><mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="5.0.0-dev">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title type="main" xml:id="ES-1980-CB-CO-385">
+                    Canto De Ruiseñor
+                </title>
+                <title type="subtitle">
+                    No Title
+                </title>
+                <respStmt>
+                    <persName role="compiler">
+                        Córdova y Oña
+                    </persName>
+                    <persName role="informer">
+                        <geogName/>
+                    </persName>
+                    <persName role="encoder">
+                        Sara González
+                    </persName>
+                    <persName role="editor"/>
+                </respStmt>
+            </titleStmt>
+            <pubStmt>
+                <publisher>
+                    co_POEM Reseach Project
+                </publisher>
+                <date>
+                    2023
+                </date>
+                <availability>
+                    To the best of our knowledge,
+                the full compositions on this site are in the public domain,
+                the excerpts are in the public domain or are allowable under fair-use,
+                and the few compositions that are still under copyright are used by permission.
+                These scores, are provided for educational use only and are not to be used commercially.
+                </availability>
+            </pubStmt>
+            <sourceDesc>
+                <source xml:id="to_add">
+                    <biblStruct>
+                        <monogr>
+                            <imprint>
+                                <title>
+                                    Cancionero Popular De La Provincia De Santander
+                                </title>
+                                <title type="subordinate">
+                                    Cantos Romeros, Marineros, De Quintos, Nupciales Y De Cuna, Libro Tercero
+                                </title>
+                                <respStmt>
+                                    <persName role="compiler">
+                                        Sixto Córdova Y Oña
+                                    </persName>
+                                    <persName role="bibliography"/>
+                                    <persName role="introduction"/>
+                                    <persName role="edition"/>
+                                </respStmt>
+                                <publisher>
+                                    Excma. Diputación Provincial De Santander
+                                </publisher>
+                                <pubPlace>
+                                    Santander
+                                </pubPlace>
+                                <date>
+                                    1980
+                                </date>
+                                <extent type="pages">
+                                    440.0
+                                </extent>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                </source>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc xml:id="encodingdesc-170nubj">
+            <appInfo xml:id="appinfo-2ix7t4">
+                <application xml:id="application-1so949c" isodate="2023-02-22T22:18:33" version="3.14.0-1474e80">
+                    <name xml:id="name-x23x97">
+                        Verovio
+                    </name>
+                    <p xml:id="p-119wiaq">
+                        Transcoded from MusicXML
+                    </p>
+                </application>
+            </appInfo>
+        </encodingDesc>
+        <workList>
+            <work>
+                <title type="main">
+                    Canto De Ruiseñor
+                </title>
+                <author type="informant">
+                    Anonymous
+                </author>
+                <incip type="lyrics">
+                    <incipText>
+                        <head/>
+                    </incipText>
+                </incip>
+                <key mode="protomelodic">A</key>
+                <meter>
+                    Binary
+                </meter>
+                <tempo>
+                    None
+                </tempo>
+                <incip type="musical">
+                    <score>
+                        <section>
+                            <measure copyof="#mmgoljc"/>
+                        </section>
+                    </score>
+                </incip>
+                <langUsage>
+                    <language xml:lang="es"/>
+                </langUsage>
+                <notesStmt>
+                    <annot/>
+                </notesStmt>
+                <classification>
+                    <termList>
+                        <term type="genre">
+                            Lullaby
+                        </term>
+                        <term type="region">
+                            Cantabria
+                        </term>
+                        <term type="district">
+                            Santander
+                        </term>
+                        <term type="city"/>
+                    </termList>
+                </classification>
+            </work>
+        </workList>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv xml:id="moaak00">
+                <score xml:id="sj26vs5">
+                    <scoreDef xml:id="s1nkqzfa">
+                        <pgHead xml:id="pq42mb5">
+                            <rend xml:id="r1m5tnn0" halign="center" valign="top">
+                                385. Canto de ruiseñor.
+                            </rend>
+                        </pgHead>
+                        <staffGrp xml:id="s1r3v0ye">
+                            <staffDef xml:id="P1" n="1" lines="5" ppq="4">
+                                <label xml:id="l1m13isg">
+                                    Piano
+                                </label>
+                                <labelAbbr xml:id="l1my9v6v">
+                                    Pno.
+                                </labelAbbr>
+                                <instrDef xml:id="irsapkj" midi.channel="0" midi.instrnum="0" midi.volume="78.00%"/>
+                                <clef xml:id="cfcx7sx" shape="G" line="2"/>
+                                <keySig xml:id="k1lhckxi" sig="0"/>
+                                <meterSig xml:id="m1htdkkx" count="4" unit="4"/>
+                            </staffDef>
+                        </staffGrp>
+                        <ambitus>
+                            <ambNote type="lowest" oct="5" pname="a"/>
+                            <ambNote type="highest" oct="6" pname="d"/>
+                        </ambitus>
+                    </scoreDef>
+                    <section xml:id="s4p7yie">
+                        <supplied type="rythymn pattern">
+                            <note dur="8"/>
+                            <rest dur="8"/>
+                            <beam>
+                                <note dur="8"/>
+                                <note dur="16"/>
+                                <note dur="16"/>
+                            </beam>
+                            <note dur="8"/>
+                            <rest dur="8"/>
+                            <note dur="4"/>
+                        </supplied>
+                        <supplied type="phrases">
+                            <phrase n="1" startid="#nmvyh1b" endid="#n1hdcmve" type="A"/>
+                        </supplied>
+                        <measure xml:id="mmgoljc" right="invis" n="1">
+                            <staff xml:id="s1i36bn3" n="1">
+                                <layer xml:id="l10rmkiv" n="1">
+                                    <note xml:id="nmvyh1b" dur.ppq="2" dur="8" oct="6" pname="d" stem.dir="down"/>
+                                    <rest xml:id="r15g8diy" dur.ppq="2" dur="8"/>
+                                    <beam xml:id="b1kcpxen">
+                                        <note xml:id="n6cewc7" dur.ppq="2" dur="8" oct="6" pname="d" stem.dir="down"/>
+                                        <note xml:id="nngmi91" dur.ppq="1" dur="16" oct="6" pname="c" stem.dir="down"/>
+                                        <note xml:id="n1qju92y" dur.ppq="1" dur="16" oct="5" pname="b" stem.dir="down"/>
+                                    </beam>
+                                    <note xml:id="ntt2c4m" dur.ppq="2" dur="8" oct="5" pname="a" stem.dir="down"/>
+                                    <rest xml:id="r1brmg2b" dur.ppq="2" dur="8"/>
+                                    <note xml:id="n1hdcmve" dur.ppq="4" dur="4" oct="5" pname="a" stem.dir="down">
+                                        <artic xml:id="a1oovx75" artic="ten"/>
+                                    </note>
+                                </layer>
+                            </staff>
+                            <tempo xml:id="t909adl" place="above" staff="1" tstamp="1.000000" midi.bpm="80.000000" mm="80.000000" mm.unit="4">
+                                <rend xml:id="rsy36az" fontfam="smufl">
+                                    
+                                </rend>
+                                = 80
+                            </tempo>
+                        </measure>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>
