@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?><mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="5.0.0-dev">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title type="main" xml:id="ES-1980-CB-CO-381">
+                    Otros Cinco Ritmos Finales De Cuna
+                </title>
+                <title type="subtitle">
+                    No Title
+                </title>
+                <respStmt>
+                    <persName role="compiler">
+                        Córdova y Oña
+                    </persName>
+                    <persName role="informer">
+                        <geogName/>
+                    </persName>
+                    <persName role="encoder">
+                        Sara González
+                    </persName>
+                    <persName role="editor"/>
+                </respStmt>
+            </titleStmt>
+            <pubStmt>
+                <publisher>
+                    co_POEM Reseach Project
+                </publisher>
+                <date>
+                    2023
+                </date>
+                <availability>
+                    To the best of our knowledge,
+                the full compositions on this site are in the public domain,
+                the excerpts are in the public domain or are allowable under fair-use,
+                and the few compositions that are still under copyright are used by permission.
+                These scores, are provided for educational use only and are not to be used commercially.
+                </availability>
+            </pubStmt>
+            <sourceDesc>
+                <source xml:id="to_add">
+                    <biblStruct>
+                        <monogr>
+                            <imprint>
+                                <title>
+                                    Cancionero Popular De La Provincia De Santander
+                                </title>
+                                <title type="subordinate">
+                                    Cantos Romeros, Marineros, De Quintos, Nupciales Y De Cuna, Libro Tercero
+                                </title>
+                                <respStmt>
+                                    <persName role="compiler">
+                                        Sixto Córdova Y Oña
+                                    </persName>
+                                    <persName role="bibliography"/>
+                                    <persName role="introduction"/>
+                                    <persName role="edition"/>
+                                </respStmt>
+                                <publisher>
+                                    Excma. Diputación Provincial De Santander
+                                </publisher>
+                                <pubPlace>
+                                    Santander
+                                </pubPlace>
+                                <date>
+                                    1980
+                                </date>
+                                <extent type="pages">
+                                    440.0
+                                </extent>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                </source>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc xml:id="encodingdesc-ig92r1">
+            <appInfo xml:id="appinfo-c4yl63">
+                <application xml:id="application-c9njs4" isodate="2023-02-22T22:18:33" version="3.14.0-1474e80">
+                    <name xml:id="name-1xl3ytg">
+                        Verovio
+                    </name>
+                    <p xml:id="p-loe9d8">
+                        Transcoded from MusicXML
+                    </p>
+                </application>
+            </appInfo>
+        </encodingDesc>
+        <workList>
+            <work>
+                <title type="main">
+                    Otros Cinco Ritmos Finales De Cuna
+                </title>
+                <author type="informant">
+                    Anonymous
+                </author>
+                <incip type="lyrics">
+                    <incipText>
+                        <head/>
+                    </incipText>
+                </incip>
+                <key mode="protomelodic">A</key>
+                <meter>
+                    Binary
+                </meter>
+                <tempo>
+                    None
+                </tempo>
+                <incip type="musical">
+                    <score>
+                        <section>
+                            <measure copyof="#m11aqvt9"/>
+                            <measure copyof="#m1rxi518"/>
+                        </section>
+                    </score>
+                </incip>
+                <langUsage>
+                    <language xml:lang="es"/>
+                </langUsage>
+                <notesStmt>
+                    <annot/>
+                </notesStmt>
+                <classification>
+                    <termList>
+                        <term type="genre">
+                            Lullaby
+                        </term>
+                        <term type="region">
+                            Cantabria
+                        </term>
+                        <term type="district">
+                            Santander
+                        </term>
+                        <term type="city"/>
+                    </termList>
+                </classification>
+            </work>
+        </workList>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv xml:id="m1ns4sg0">
+                <score xml:id="s1xwz4hl">
+                    <scoreDef xml:id="s7lr2gn">
+                        <pgHead xml:id="pjhhjzh">
+                            <rend xml:id="rs29lgd" halign="center" valign="top">
+                                381. Otros cinco ritmos finales de cuna.
+                            </rend>
+                        </pgHead>
+                        <staffGrp xml:id="s1adtczk">
+                            <staffDef xml:id="P1" n="1" lines="5" ppq="2">
+                                <label xml:id="l13bfsbp">
+                                    Piano
+                                </label>
+                                <labelAbbr xml:id="ln0uorg">
+                                    Pno.
+                                </labelAbbr>
+                                <instrDef xml:id="ih85590" midi.channel="0" midi.instrnum="0" midi.volume="78.00%"/>
+                                <clef xml:id="cmtirw7" shape="G" line="2"/>
+                                <keySig xml:id="k1bu1gbv" sig="0"/>
+                                <meterSig xml:id="m125y0ic" count="2" unit="4"/>
+                            </staffDef>
+                        </staffGrp>
+                        <ambitus>
+                            <ambNote type="lowest" oct="3" pname="a"/>
+                            <ambNote type="highest" oct="4" pname="f"/>
+                        </ambitus>
+                    </scoreDef>
+                    <section xml:id="s31thxw">
+                        <supplied type="rythymn pattern">
+                            <note dur="4"/>
+                            <rest dur="8"/>
+                            <note dur="8"/>
+                            <note dur="4"/>
+                            <rest dur="8"/>
+                            <note dur="8"/>
+                            <note dur="4"/>
+                            <rest dur="4"/>
+                        </supplied>
+                        <supplied type="phrases">
+                            <phrase n="1" startid="#n1pq2b9k" endid="#nip1uwg" type="A"/>
+                        </supplied>
+                        <measure xml:id="m11aqvt9" n="1">
+                            <staff xml:id="sn247hp" n="1">
+                                <layer xml:id="l1nd4yww" n="1">
+                                    <note xml:id="n1pq2b9k" dur.ppq="2" dur="4" oct="4" pname="e" stem.dir="up"/>
+                                    <rest xml:id="r1ce1l90" dur.ppq="1" dur="8"/>
+                                    <note xml:id="nj1ajri" dur.ppq="1" dur="8" oct="4" pname="f" stem.dir="up"/>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="m1rxi518" n="2">
+                            <staff xml:id="s352y7m" n="1">
+                                <layer xml:id="lgtecpr" n="1">
+                                    <note xml:id="njkd47s" dur.ppq="2" dur="4" oct="4" pname="e" stem.dir="up"/>
+                                    <rest xml:id="rsxy5fo" dur.ppq="1" dur="8"/>
+                                    <note xml:id="n1odhz72" dur.ppq="1" dur="8" oct="4" pname="f" stem.dir="up"/>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="m15hsoko" n="3">
+                            <staff xml:id="s14vew8d" n="1">
+                                <layer xml:id="lknbjuo" n="1">
+                                    <note xml:id="n1xjmzyd" dur.ppq="2" dur="4" oct="4" pname="e" stem.dir="up"/>
+                                    <rest xml:id="r2hg6mx" dur.ppq="2" dur="4"/>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="m1y9jyan" n="4">
+                            <staff xml:id="s94fjfg" n="1">
+                                <layer xml:id="l2o5kio" n="1">
+                                    <beam xml:id="brwxh0e">
+                                        <note xml:id="n10lq64f" dur.ppq="1" dur="8" oct="4" pname="f" stem.dir="up"/>
+                                        <note xml:id="n1wy31gs" dur.ppq="1" dur="8" oct="4" pname="e" stem.dir="up"/>
+                                    </beam>
+                                    <beam xml:id="b1rkd52x">
+                                        <note xml:id="n15xcw8q" dur.ppq="1" dur="8" oct="4" pname="f" stem.dir="up"/>
+                                        <note xml:id="ndd621s" dur.ppq="1" dur="8" oct="4" pname="e" stem.dir="up"/>
+                                    </beam>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="m1yu0bxh" n="5">
+                            <staff xml:id="s13skno7" n="1">
+                                <layer xml:id="l18zdo8w" n="1">
+                                    <beam xml:id="bp9lj1n">
+                                        <note xml:id="n1sbnr05" dur.ppq="1" dur="8" oct="4" pname="e" stem.dir="up"/>
+                                        <note xml:id="nhej726" dur.ppq="1" dur="8" oct="3" pname="a" stem.dir="up"/>
+                                    </beam>
+                                    <note xml:id="n1p367pg" dur.ppq="1" dur="8" oct="3" pname="a" stem.dir="up"/>
+                                    <rest xml:id="rsotxcs" dur.ppq="1" dur="8"/>
+                                </layer>
+                            </staff>
+                            <tie xml:id="t1smbch" startid="#nhej726" endid="#n1p367pg"/>
+                        </measure>
+                        <measure xml:id="mlwd3qb" right="end" n="6">
+                            <staff xml:id="swfhtlo" n="1">
+                                <layer xml:id="l1clcjjm" n="1">
+                                    <beam xml:id="bd4fu4h">
+                                        <note xml:id="n19xv1rg" dur.ppq="1" dur="8" oct="3" pname="b" stem.dir="up" accid="f"/>
+                                        <note xml:id="n12g8dc" dur.ppq="1" dur="8" oct="3" pname="a" stem.dir="up"/>
+                                    </beam>
+                                    <note xml:id="nip1uwg" dur.ppq="1" dur="8" oct="3" pname="a" stem.dir="up"/>
+                                    <rest xml:id="rglst79" dur.ppq="1" dur="8"/>
+                                </layer>
+                            </staff>
+                            <tie xml:id="t1dspjvw" startid="#n12g8dc" endid="#nip1uwg"/>
+                        </measure>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>

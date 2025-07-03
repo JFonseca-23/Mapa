@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?><mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="5.0.0-dev">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title type="main" xml:id="ES-1991-SO-KS-746">
+                    Los Carboneros
+                </title>
+                <title type="subtitle"/>
+                <respStmt>
+                    <persName role="compiler">
+                        Kurt Schindler
+                    </persName>
+                    <persName role="informer">
+                        <geogName>
+                            Montenegro de Cameros, Soria(Castilla y León)
+                        </geogName>
+                    </persName>
+                    <persName role="encoder">
+                        Rebeca Gea Martínez
+                    </persName>
+                    <persName role="editor">
+                        Rebeca Gea Martínez
+                    </persName>
+                </respStmt>
+            </titleStmt>
+            <pubStmt>
+                <publisher>
+                    co_POEM Reseach Project
+                </publisher>
+                <date>
+                    2023
+                </date>
+                <availability>
+                    To the best of our knowledge,
+                the full compositions on this site are in the public domain,
+                the excerpts are in the public domain or are allowable under fair-use,
+                and the few compositions that are still under copyright are used by permission.
+                These scores, are provided for educational use only and are not to be used commercially.
+                </availability>
+            </pubStmt>
+            <sourceDesc>
+                <source xml:id="to_add">
+                    <biblStruct>
+                        <monogr>
+                            <imprint>
+                                <title>
+                                    Folk Music And Poetry Of Spain And Portugal
+                                </title>
+                                <title type="subordinate">
+                                    Edición Facsímil
+                                </title>
+                                <respStmt>
+                                    <persName role="compiler">
+                                        Kurt Schindler
+                                    </persName>
+                                    <persName role="bibliography"/>
+                                    <persName role="introduction">
+                                        Israel J. Katz Y Miguel Manzano Alonso
+                                    </persName>
+                                    <persName role="edition">
+                                        Samuel G. Armistead
+                                    </persName>
+                                </respStmt>
+                                <publisher>
+                                    Diputación Provincial De Salamanca
+                                </publisher>
+                                <pubPlace>
+                                    Salamanca
+                                </pubPlace>
+                                <date>
+                                    1991
+                                </date>
+                                <extent type="pages">
+                                    173.0
+                                </extent>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                </source>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc xml:id="encodingdesc-k46q2z">
+            <appInfo xml:id="appinfo-qjw9pt">
+                <application xml:id="application-zod3zv" isodate="2023-02-22T22:18:34" version="3.14.0-1474e80">
+                    <name xml:id="name-1ihm6nq">
+                        Verovio
+                    </name>
+                    <p xml:id="p-1gr4abm">
+                        Transcoded from MusicXML
+                    </p>
+                </application>
+            </appInfo>
+        </encodingDesc>
+        <workList>
+            <work>
+                <title type="main">
+                    Los Carboneros
+                </title>
+                <author type="informant">
+                    Anonymous
+                </author>
+                <incip type="lyrics">
+                    <incipText>
+                        <head/>
+                    </incipText>
+                </incip>
+                <key mode="major">C</key>
+                <meter>
+                    Ternary
+                </meter>
+                <tempo>
+                    None
+                </tempo>
+                <incip type="musical">
+                    <score>
+                        <section>
+                            <measure copyof="#m7m9teu"/>
+                            <measure copyof="#mqdzhu"/>
+                        </section>
+                    </score>
+                </incip>
+                <langUsage>
+                    <language xml:lang="es"/>
+                </langUsage>
+                <notesStmt>
+                    <annot/>
+                </notesStmt>
+                <classification>
+                    <termList>
+                        <term type="genre">
+                            Children song
+                        </term>
+                        <term type="region">
+                            Castilla y León
+                        </term>
+                        <term type="district">
+                            Soria
+                        </term>
+                        <term type="city">
+                            Montenegro de Cameros
+                        </term>
+                    </termList>
+                </classification>
+            </work>
+        </workList>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv xml:id="mnjfyjc">
+                <score xml:id="smcmrv7">
+                    <scoreDef xml:id="syqste5">
+                        <pgHead xml:id="p1a29rvc">
+                            <rend xml:id="rwel89i" halign="center" valign="top">
+                                schindler 746: Los carboneros (corro)
+                            </rend>
+                            <rend xml:id="r8z8gn8" halign="center" valign="top">
+                                Montenegro de Cameros
+                            </rend>
+                        </pgHead>
+                        <staffGrp xml:id="s1w44ma0">
+                            <staffDef xml:id="P1" n="1" lines="5" ppq="4">
+                                <label xml:id="l1xgwlbh">
+                                    Piano
+                                </label>
+                                <labelAbbr xml:id="lwa3ho5">
+                                    Pno.
+                                </labelAbbr>
+                                <instrDef xml:id="i10b7npl" midi.channel="0" midi.instrnum="0" midi.volume="78.00%"/>
+                                <clef xml:id="c1hwp9ma" shape="G" line="2"/>
+                                <keySig xml:id="krly62e" sig="0"/>
+                                <meterSig xml:id="m19sur2y" count="3" unit="4"/>
+                            </staffDef>
+                        </staffGrp>
+                        <ambitus>
+                            <ambNote type="lowest" oct="4" pname="e"/>
+                            <ambNote type="highest" oct="5" pname="f"/>
+                        </ambitus>
+                    </scoreDef>
+                    <section xml:id="sisv111">
+                        <supplied type="rythymn pattern">
+                            <beam>
+                                <note dur="8"/>
+                                <note dur="16"/>
+                                <note dur="16"/>
+                            </beam>
+                            <beam>
+                                <note dur="8"/>
+                                <note dur="8"/>
+                            </beam>
+                            <beam>
+                                <note dur="8"/>
+                                <note dur="8"/>
+                            </beam>
+                        </supplied>
+                        <supplied type="phrases">
+                            <phrase n="1" startid="#n1nxaykb" endid="#nwseaq4" type="A"/>
+                            <phrase n="2" startid="#nf8mv5t" endid="#n17hvegh" type="A"/>
+                        </supplied>
+                        <measure xml:id="m7m9teu" n="1">
+                            <staff xml:id="sybjiuw" n="1">
+                                <layer xml:id="l882hag" n="1">
+                                    <note xml:id="n1nxaykb" dur.ppq="2" dur="8" oct="4" pname="g" stem.dir="up"/>
+                                    <note xml:id="n151zjl7" dur.ppq="2" dur="8" oct="4" pname="e" stem.dir="up"/>
+                                    <note xml:id="n8k2sq9" dur.ppq="2" dur="8" oct="4" pname="g" stem.dir="up"/>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="mqdzhu" left="rptstart" n="2">
+                            <staff xml:id="s1s2lsar" n="1">
+                                <layer xml:id="l1ceb8pp" n="1">
+                                    <beam xml:id="b105vy49">
+                                        <note xml:id="n13vn285" dur.ppq="2" dur="8" oct="5" pname="e" stem.dir="down"/>
+                                        <note xml:id="njrmigv" dur.ppq="1" dur="16" oct="5" pname="e" stem.dir="down"/>
+                                        <note xml:id="n8k69ih" dur.ppq="1" dur="16" oct="5" pname="e" stem.dir="down"/>
+                                    </beam>
+                                    <beam xml:id="b1xntvt6">
+                                        <note xml:id="n11zaj6h" dur.ppq="2" dur="8" oct="5" pname="e" stem.dir="down"/>
+                                        <note xml:id="n9ql68t" dur.ppq="2" dur="8" oct="5" pname="d" stem.dir="down"/>
+                                    </beam>
+                                    <beam xml:id="b238z7t">
+                                        <note xml:id="n19yjsyt" dur.ppq="2" dur="8" oct="5" pname="c" stem.dir="down"/>
+                                        <note xml:id="n1oesfuc" dur.ppq="2" dur="8" oct="4" pname="a" stem.dir="down"/>
+                                    </beam>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="m1jy5eyu" n="3">
+                            <staff xml:id="s1op0vgt" n="1">
+                                <layer xml:id="l1cd7hbb" n="1">
+                                    <beam xml:id="brk8rrk">
+                                        <note xml:id="nxx1azc" dur.ppq="2" dur="8" oct="4" pname="g" stem.dir="up"/>
+                                        <note xml:id="naqc4ui" dur.ppq="1" dur="16" oct="4" pname="g" stem.dir="up"/>
+                                        <note xml:id="npiofox" dur.ppq="1" dur="16" oct="4" pname="g" stem.dir="up"/>
+                                    </beam>
+                                    <beam xml:id="bux54jh">
+                                        <note xml:id="n1kgnv0e" dur.ppq="2" dur="8" oct="4" pname="g" stem.dir="up"/>
+                                        <note xml:id="n1k2y6ca" dur.ppq="2" dur="8" oct="4" pname="g" stem.dir="up"/>
+                                    </beam>
+                                    <beam xml:id="b1hgwc2w">
+                                        <note xml:id="ngrk4nr" dur.ppq="2" dur="8" oct="5" pname="c" stem.dir="down"/>
+                                        <note xml:id="n17sb10l" dur.ppq="2" dur="8" oct="4" pname="b" stem.dir="down"/>
+                                    </beam>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="m1ci0zm" n="4">
+                            <staff xml:id="sdbmvai" n="1">
+                                <layer xml:id="l1hug04n" n="1">
+                                    <beam xml:id="b1x9n9kh">
+                                        <note xml:id="n1ck1n36" dur.ppq="2" dur="8" oct="4" pname="a" stem.dir="up"/>
+                                        <note xml:id="nzq6k5p" dur.ppq="1" dur="16" oct="4" pname="a" stem.dir="up"/>
+                                        <note xml:id="n1apynxz" dur.ppq="1" dur="16" oct="4" pname="b" stem.dir="up"/>
+                                    </beam>
+                                    <beam xml:id="b19zdidc">
+                                        <note xml:id="n1gihos7" dur.ppq="2" dur="8" oct="5" pname="c" stem.dir="down"/>
+                                        <note xml:id="nft5l3p" dur.ppq="2" dur="8" oct="5" pname="f" stem.dir="down"/>
+                                    </beam>
+                                    <beam xml:id="bzlxi30">
+                                        <note xml:id="n2b3grv" dur.ppq="2" dur="8" oct="5" pname="e" stem.dir="down"/>
+                                        <note xml:id="n4at594" dur.ppq="2" dur="8" oct="5" pname="d" stem.dir="down"/>
+                                    </beam>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <ending xml:id="ec1biiy" lendsym="angledown" n="1">
+                            <measure xml:id="mystm0r" right="rptend" n="5">
+                                <staff xml:id="s1n3jocx" n="1">
+                                    <layer xml:id="l1553b5w" n="1">
+                                        <note xml:id="nwseaq4" dur.ppq="4" dur="4" oct="5" pname="c" stem.dir="down"/>
+                                        <rest xml:id="rispbmz" dur.ppq="2" dur="8"/>
+                                        <note xml:id="nf8mv5t" dur.ppq="2" dur="8" oct="4" pname="g" stem.dir="up"/>
+                                        <note xml:id="noxfk5g" dur.ppq="2" dur="8" oct="4" pname="e" stem.dir="up"/>
+                                        <note xml:id="n1kpleay" dur.ppq="2" dur="8" oct="4" pname="g" stem.dir="up"/>
+                                    </layer>
+                                </staff>
+                            </measure>
+                        </ending>
+                        <ending xml:id="eqs8oj4" lendsym="angledown" n="2">
+                            <measure xml:id="m13ge5jz" right="end" n="6">
+                                <staff xml:id="spakqky" n="1">
+                                    <layer xml:id="lw2626u" n="1">
+                                        <note xml:id="n17hvegh" dur.ppq="4" dur="4" oct="5" pname="c" stem.dir="down"/>
+                                        <rest xml:id="r52hj28" dur.ppq="2" dur="8"/>
+                                    </layer>
+                                </staff>
+                            </measure>
+                        </ending>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>
